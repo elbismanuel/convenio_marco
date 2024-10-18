@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Categorías de Desarrollo de Software</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+	<style>
+		body {
+			font-family: 'Inter', sans-serif;
+		}
+	</style>
+</head>
+
+<body class="bg-gray-100 text-gray-900">
+	<div class="container mx-auto px-4 py-8">
+		<h1 class="text-4xl font-bold text-center text-gray-800 mb-12">Categorías de Desarrollo de Software</h1>
+		<div class="bg-white shadow-xl rounded-lg p-6 max-w-4xl mx-auto">
+			<ul id="category-tree" class="space-y-4">
+				<!-- Las categorías se generarán dinámicamente aquí -->
+			</ul>
+		</div>
+	</div>
+
+	<!-- Modal para más detalles -->
+	<div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+		<div class="bg-white rounded-lg p-8 max-w-lg w-full mx-4">
+			<h2 id="modal-title" class="text-2xl font-bold mb-4"></h2>
+			<p id="modal-content" class="text-gray-700 mb-6"></p>
+			<button id="close-modal"
+				class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-150 ease-in-out">Cerrar</button>
+		</div>
+	</div>
+
+	<script>
+		const categories = [
+			{
+				name: "Aplicaciones Web",
+				icon: '<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>',
+				subcategories: [
+					{ name: "Desarrollo Frontend", description: "Crear interfaces visuales interactivas y responsivas, garantizando una experiencia de usuario fluida." },
+					{ name: "Desarrollo Backend", description: "Gestionar la lógica del servidor, bases de datos y APIs para una funcionalidad eficiente y segura." },
+					{ name: "Desarrollo Full Stack", description: "Dominar tanto el frontend como el backend, proporcionando soluciones completas e integradas." },
+					{ name: "Diseño UI/UX para Web", description: "Ofrecer interfaces atractivas y usables, centradas en mejorar la experiencia del usuario." },
+					{ name: "Seguridad en Aplicaciones Web", description: "Implementar medidas robustas de seguridad para proteger contra ataques y vulnerabilidades." },
+					{ name: "Optimización y Rendimiento Web", description: "Asegurar tiempos de carga rápidos y una optimización eficiente de recursos para una mejor performance." },
+					{ name: "Pruebas y Control de Calidad Web", description: "Realizar pruebas exhaustivas para garantizar que el producto es estable y cumple con los estándares de calidad." },
+					{ name: "Integración de APIs y Servicios Web", description: "Conectar e integrar correctamente servicios externos y APIs para un intercambio fluido de datos." },
+					{ name: "Desarrollo de Aplicaciones de Página Única (SPA)", description: "Crear aplicaciones dinámicas que cargan una sola vez, proporcionando transiciones rápidas entre vistas." },
+					{ name: "Aplicaciones Web Progresivas (PWA)", description: "Desarrollar aplicaciones web que funcionen offline y se comporten como apps nativas." },
+					{ name: "Implementación de IA en Aplicaciones Web", description: "Integrar funciones basadas en inteligencia artificial para automatización o análisis avanzado en la web." },
+					{ name: "Desarrollo de Dashboards para Análisis de Datos", description: "Construir paneles interactivos y visuales que permitan analizar y visualizar datos en tiempo real." }
+				]
+			},
+			{
+				name: "Aplicaciones Móviles (Híbridas y Nativas)",
+				icon: '<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>',
+				subcategories: [
+					{ name: "Desarrollo con Frameworks Híbridos", description: "Creación de aplicaciones móviles que funcionan en múltiples plataformas (como iOS y Android) utilizando un solo código base." },
+					{ name: "Desarrollo Nativo (Android e iOS)", description: "Creación de aplicaciones móviles específicas para una plataforma, utilizando los lenguajes y herramientas oficiales de cada sistema operativo." },
+					{ name: "Diseño UI/UX para Apps Móviles", description: "Crear interfaces visuales (UI) y experiencias de usuario (UX) que sean atractivas, intuitivas y funcionales en dispositivos móviles." },
+					{ name: "Integración de Hardware y Sensores", description: "Permitir que las apps interactúen directamente con los componentes físicos del dispositivo, proporcionando funcionalidades avanzadas." },
+					{ name: "Optimización de Rendimiento", description: "Garantizar una experiencia de usuario fluida y rápida." },
+					{ name: "Implementación de ML en Apps Móviles", description: "Permitir que las aplicaciones aprendan de los datos y mejoren su rendimiento a lo largo del tiempo." },
+					{ name: "Procesamiento de Imágenes y Visión por Computadora", description: "Capacidad de las apps para interpretar, analizar y manipular imágenes o videos capturados a través de la cámara del dispositivo." },
+					{ name: "Reconocimiento de Voz y Texto", description: "Interpretar y convertir audio en texto." },
+					{ name: "Integración de Realidad Aumentada", description: "Combinar elementos virtuales con el entorno real del usuario, superponiendo información digital sobre la vista del mundo real a través de la cámara del dispositivo." },
+					{ name: "Desarrollo de Chatbots para Apps Móviles", description: "Integrar sistemas automatizados de conversación dentro de la app para interactuar con los usuarios, responder preguntas frecuentes y ofrecer asistencia personalizada a través de mensajes de texto o voz." },
+					{ name: "Implementación de Análisis Predictivo", description: "Utilizar datos históricos y modelos estadísticos para prever futuros comportamientos o tendencias, permitiendo a la app anticipar necesidades de los usuarios y optimizar la toma de decisiones." },
+					{ name: "Seguridad en Apps Móviles", description: "Proteger la aplicación contra amenazas y vulnerabilidades mediante cifrado de datos, autenticación segura, y medidas de prevención contra ataques, asegurando la privacidad y la integridad de la información del usuario." }
+				]
+			},
+			{
+				name: "Aplicaciones de Escritorio",
+				icon: '<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>',
+				subcategories: [
+					{ name: "Desarrollo Multiplataforma (Windows, macOS, Linux)", description: "Desarrollar aplicaciones compatibles con Windows, macOS y Linux, garantizando un funcionamiento eficiente en todas las plataformas." },
+					{ name: "Interfaces Gráficas Avanzadas", description: "Crear interfaces gráficas avanzadas e intuitivas que mejoren la experiencia del usuario." },
+					{ name: "Empaquetado y Distribución", description: "Empaquetar y distribuir aplicaciones de manera eficiente para facilitar su instalación y actualizaciones." },
+					{ name: "Integración con Sistemas Operativos", description: "Integrar aplicaciones con las funciones y servicios específicos de los sistemas operativos." },
+					{ name: "Desarrollo de Aplicaciones de Análisis de Datos", description: "Desarrollar aplicaciones para análisis de datos con herramientas interactivas y visualización avanzada." },
+					{ name: "Implementación de Algoritmos de ML", description: "Implementar algoritmos de machine learning para análisis y predicción dentro de las aplicaciones." },
+					{ name: "Procesamiento de Imágenes y Visión Artificial", description: "Desarrollar soluciones para el procesamiento de imágenes y visión artificial con alta precisión." },
+					{ name: "Desarrollo de Herramientas de Automatización con IA", description: "Crear herramientas de automatización que utilicen inteligencia artificial para optimizar tareas." },
+					{ name: "Aplicaciones de Simulación y Modelado", description: "Diseñar aplicaciones de simulación y modelado con cálculos precisos y visualizaciones interactivas." },
+					{ name: "Integración de Procesamiento de Lenguaje Natural", description: "Integrar procesamiento de lenguaje natural para interacción más natural con la aplicación." },
+					{ name: "Optimización de Rendimiento para Aplicaciones de Escritorio", description: "Optimizar el rendimiento de las aplicaciones para asegurar tiempos de respuesta rápidos y uso eficiente de recursos." },
+					{ name: "Seguridad en Aplicaciones de Escritorio", description: "Implementar medidas de seguridad robustas para proteger las aplicaciones de escritorio contra amenazas y vulnerabilidades." }
+				]
+			},
+			{
+				name: "Aplicaciones Descentralizadas y Blockchain",
+				icon: '<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>',
+				subcategories: [
+					{ name: "Desarrollo de Smart Contracts", description: "Desarrollar contratos inteligentes que ejecuten automáticamente acuerdos al cumplirse condiciones predefinidas." },
+					{ name: "Creación de DApps (Aplicaciones Descentralizadas)", description: "Crear aplicaciones descentralizadas (DApps) que operen en una red blockchain sin intermediarios." },
+					{ name: "Implementación de Protocolos Blockchain", description: "Implementar protocolos blockchain para garantizar transacciones seguras y transparentes." },
+					{ name: "Desarrollo de Sistemas de Almacenamiento Descentralizado", description: "Desarrollar sistemas de almacenamiento descentralizado que permitan guardar datos de forma segura y distribuida." },
+					{ name: "Implementación de Redes Peer-to-Peer (P2P)", description: "Implementar redes peer-to-peer (P2P) para la comunicación directa entre nodos sin servidores centrales." },
+					{ name: "Desarrollo de Plataformas de Consenso Distribuido", description: "Crear plataformas de consenso distribuido para validar transacciones de forma colaborativa y sin confianza." },
+					{ name: "Implementación de Sistemas de Gobernanza Descentralizada", description: "Desarrollar sistemas de gobernanza descentralizada que permitan la toma de decisiones comunitaria en plataformas blockchain." },
+					{ name: "Desarrollo de Plataformas DeFi (Finanzas Descentralizadas)", description: "Implementar plataformas DeFi que ofrezcan servicios financieros sin intermediarios tradicionales." },
+					{ name: "Tokenización de Activos Digitales", description: "Tokenizar activos digitales para representar bienes físicos o digitales en la blockchain." },
+					{ name: "Implementación de Sistemas de Identidad Descentralizada", description: "Implementar sistemas de identidad descentralizada para gestionar identidades digitales de forma segura y privada." },
+					{ name: "Optimización y Seguridad en Blockchain", description: "Optimizar y asegurar redes blockchain para prevenir ataques y vulnerabilidades." },
+					{ name: "Escalabilidad y Interoperabilidad de Redes Blockchain", description: "Desarrollar soluciones para la escalabilidad e interoperabilidad de redes blockchain, permitiendo un mayor rendimiento y conectividad." }
+				]
+			},
+			{
+				name: "Sistemas de Interoperabilidad e Integraciones",
+				icon: '<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>',
+				subcategories: [
+					{ name: "Desarrollo de APIs y Microservicios", description: "Crear interfaces y servicios independientes que permiten la comunicación entre diferentes aplicaciones y sistemas, facilitando la modularidad y escalabilidad del software." },
+					{ name: "Integración de Sistemas Legados", description: "Adaptación y conexión de sistemas antiguos con tecnologías modernas para asegurar la interoperabilidad y continuidad operativa." },
+					{ name: "Mensajería y Colas", description: "Implementar sistemas para gestionar la comunicación entre componentes de software mediante el envío y recepción de mensajes, utilizando colas para el procesamiento asíncrono de tareas." },
+					{ name: "Protocolos de Comunicación Avanzados", description: "Crear protocolos especializados, como gRPC o MQTT, para mejorar la eficiencia y seguridad en la transmisión de datos entre sistemas y servicios." },
+					{ name: "Manejo de Datos Distribuidos", description: "Gestión y sincronización de datos que se encuentran repartidos en múltiples ubicaciones o nodos, asegurando consistencia y disponibilidad." },
+					{ name: "Integración de Servicios de IA y ML", description: "Incorporar servicios de inteligencia artificial y aprendizaje automático en aplicaciones para mejorar la funcionalidad mediante análisis avanzado y automatización." },
+					{ name: "Desarrollo de Pipelines de Datos para ML", description: "Creación de flujos de trabajo que permiten la recolección, transformación y preparación de datos para el entrenamiento y despliegue de modelos de aprendizaje automático." },
+					{ name: "Implementación de API Gateways Inteligentes", description: "Configuración de gateways para gestionar el tráfico de APIs, proporcionando funciones como autenticación, enrutamiento y monitoreo de manera centralizada y eficiente." },
+					{ name: "Orquestación de Servicios", description: "Coordinación y gestión de múltiples servicios y procesos dentro de una arquitectura de microservicios para asegurar un funcionamiento cohesivo y eficiente." },
+					{ name: "Integración de Sistemas de Reconocimiento", description: "Incorporación de tecnologías de reconocimiento, como visión por computadora y reconocimiento de voz, para proporcionar capacidades avanzadas de identificación y análisis." },
+					{ name: "Desarrollo de Middleware para Procesamiento de Datos", description: "Creación de capas intermedias que facilitan la comunicación y procesamiento de datos entre aplicaciones y sistemas, asegurando la interoperabilidad y eficiencia." },
+					{ name: "Implementación de Soluciones IoT", description: "Desarrollo e integración de soluciones para conectar y gestionar dispositivos de Internet de las Cosas (IoT), permitiendo la recopilación y análisis de datos en tiempo real." }
+				]
+			},
+			{
+				name: "Data Warehousing, Business Intelligence y Analytics",
+				icon: '<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>',
+				subcategories: [
+					{ name: "Diseño de Data Warehouses y Data Lakes", description: "Diseñar arquitecturas robustas de data warehouses y data lakes para almacenar y gestionar grandes volúmenes de datos." },
+					{ name: "Desarrollo ETL y ELT", description: "Desarrollar procesos ETL y ELT eficientes para la extracción, transformación y carga de datos." },
+					{ name: "Análisis de Datos y Reportería Avanzada", description: "Realizar análisis de datos detallados y generar reportes avanzados para la toma de decisiones." },
+					{ name: "Visualización de Datos Interactiva", description: "Crear visualizaciones de datos interactivas que permitan una exploración y análisis más intuitivo." },
+					{ name: "Implementación de Big Data", description: "Implementar soluciones de Big Data para procesar grandes cantidades de información de forma eficiente." },
+					{ name: "Machine Learning para Business Intelligence", description: "Utilizar machine learning para mejorar las capacidades de inteligencia empresarial y optimizar procesos." },
+					{ name: "Análisis Predictivo y Prescriptivo", description: "Aplicar análisis predictivo y prescriptivo para anticipar tendencias y sugerir acciones óptimas." },
+					{ name: "Procesamiento de Datos en Tiempo Real", description: "Desarrollar sistemas para el procesamiento de datos en tiempo real, permitiendo respuestas inmediatas a eventos." },
+					{ name: "Implementación de Deep Learning", description: "Implementar modelos de deep learning para resolver problemas complejos en el ámbito empresarial." },
+					{ name: "Análisis de Imágenes y Vídeo", description: "Desarrollar soluciones para el análisis de imágenes y videos, obteniendo información valiosa a partir de medios visuales." },
+					{ name: "Desarrollo de Sistemas de Recomendación", description: "Crear sistemas de recomendación personalizados basados en el análisis de datos del usuario." },
+					{ name: "Implementación de Data Governance y Calidad de Datos", description: "Implementar estrategias de data governance y asegurar la calidad de los datos en todas las etapas del proceso." }
+				]
+			},
+			{
+				name: "Sistemas de Gestión Empresarial e IA",
+				icon: '<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>',
+				subcategories: [
+					{ name: "Implementación y Personalización de ERP", description: "Adaptación e implementación de sistemas ERP para gestionar y automatizar procesos empresariales, personalizándolos según las necesidades específicas de la organización." },
+					{ name: "Desarrollo de CRM con IA", description: "Creación de sistemas CRM que integran inteligencia artificial para mejorar la gestión de relaciones con clientes, automatizar tareas y ofrecer insights avanzados sobre el comportamiento de los clientes." },
+					{ name: "Sistemas de Gestión de Recursos Humanos Inteligentes", description: "Implementación de soluciones de RRHH que utilizan IA para optimizar la gestión de personal, incluyendo reclutamiento, evaluación del desempeño y gestión de beneficios." },
+					{ name: "Automatización de Procesos de Negocio (BPA)", description: "Aplicación de tecnologías para automatizar tareas repetitivas y procesos empresariales, mejorando la eficiencia y reduciendo costos operativos." },
+					{ name: "Implementación de IA para Optimización de Operaciones", description: "Uso de inteligencia artificial para analizar y mejorar procesos operacionales, optimizando recursos, tiempos y costos." },
+					{ name: "Desarrollo de Módulos de Análisis Predictivo", description: "Creación de herramientas para analizar datos históricos y prever tendencias futuras, facilitando la toma de decisiones basadas en datos." },
+					{ name: "Sistemas de Gestión de Conocimiento con ML", description: "Desarrollo de plataformas que utilizan aprendizaje automático para organizar, categorizar y extraer conocimiento relevante de grandes volúmenes de datos." },
+					{ name: "Implementación de Chatbots y Asistentes Virtuales", description: "Integración de chatbots y asistentes virtuales en sistemas empresariales para proporcionar soporte automatizado y mejorar la interacción con usuarios y clientes." },
+					{ name: "Análisis de Sentimientos y Procesamiento de Lenguaje Natural", description: "Aplicación de técnicas de procesamiento de lenguaje natural para analizar y comprender las opiniones y sentimientos expresados en textos o comunicaciones." },
+					{ name: "Sistemas de Detección de Fraudes con ML", description: "Desarrollo de soluciones que emplean aprendizaje automático para identificar y prevenir actividades fraudulentas mediante el análisis de patrones y anomalías en datos." },
+					{ name: "Optimización de Cadena de Suministro con IA", description: "Uso de inteligencia artificial para mejorar la eficiencia y efectividad de la cadena de suministro, optimizando la logística, la gestión de inventarios y la planificación." },
+					{ name: "Implementación de Soluciones de Planificación Avanzada", description: "Desarrollo e integración de herramientas de planificación que utilizan técnicas avanzadas y algoritmos para mejorar la previsión y la gestión de recursos y proyectos." }
+				]
+			}
+		];
+
+		const categoryTree = document.getElementById('category-tree');
+		const modal = document.getElementById('modal');
+		const modalTitle = document.getElementById('modal-title');
+		const modalContent = document.getElementById('modal-content');
+		const closeModal = document.getElementById('close-modal');
+
+		function createCategoryHTML(category) {
+			const li = document.createElement('li');
+			li.className = 'border-b border-gray-200 pb-4';
+			li.innerHTML = `
+				<button class="flex items-center justify-between w-full text-left font-semibold text-lg hover:text-blue-600 focus:outline-none transition duration-150 ease-in-out">
+					<span class="flex items-center">
+						${category.icon}
+						${category.name}
+					</span>
+					<svg class="w-5 h-5 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+				</button>
+				<ul class="pl-8 mt-4 space-y-2 hidden">
+					${category.subcategories.map(subcat => `
+						<li class="flex items-center justify-between">
+							<span>${subcat.name}</span>
+							<button class="text-blue-600 hover:text-blue-800 focus:outline-none" onclick="showDetails('${subcat.name}', '${subcat.description.replace(/'/g, "\\'")}')">
+								<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+							</button>
+						</li>
+					`).join('')}
+				</ul>
+			`;
+			return li;
+		}
+
+		categories.forEach(category => {
+			categoryTree.appendChild(createCategoryHTML(category));
+		});
+
+		categoryTree.addEventListener('click', (e) => {
+			const button = e.target.closest('button');
+			if (button && button.nextElementSibling) {
+				const sublist = button.nextElementSibling;
+				const icon = button.querySelector('svg:last-child');
+				sublist.classList.toggle('hidden');
+				icon.classList.toggle('rotate-180');
+			}
+		});
+
+		function showDetails(subcategory, description) {
+			modalTitle.textContent = subcategory;
+			modalContent.textContent = description;
+			modal.classList.remove('hidden');
+		}
+
+		closeModal.addEventListener('click', () => {
+			modal.classList.add('hidden');
+		});
+
+		window.addEventListener('click', (e) => {
+			if (e.target === modal) {
+				modal.classList.add('hidden');
+			}
+		});
+	</script>
+</body>
+
+</html>
